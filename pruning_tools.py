@@ -1,6 +1,6 @@
 # Using Keras Surgeon these functions can be used to prune a trained network
 # This code uses a ranked percentage method for determining what neurons to remove
-# code modified from 
+# code modified from multiple source programs provided by https://gist.github.com/vhoudebine
 
 import mnist
 import keras.backend as K
@@ -119,7 +119,7 @@ def prune_model(model, perc, opt, layer=None):
     n_pruned = compute_pruned_count(model, perc, layer)
     
     to_prune = prune_l1(model, n_pruned, layer)      
-    
+
     if layer or layer ==0:
         model_pruned = prune_one_layer(model, to_prune, layer, opt)
     else:
