@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
+from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.models import Sequential
 
 # some debug info only relevant to my machine
@@ -49,6 +49,7 @@ def load_data():
         Loads and preprocesses the MNIST dataset.
         Returns tuples of the training and testing data.
     """
+
     (trainX, trainY), (testX, testY) = tf.keras.datasets.mnist.load_data()
     trainX = trainX.reshape(-1, 28, 28, 1).astype(np.float32) / 255
     testX  = testX.reshape(-1, 28, 28, 1).astype(np.float32) / 255
@@ -57,7 +58,6 @@ def load_data():
     testY  = tf.keras.utils.to_categorical(testY)
 
     return (trainX, trainY), (testX, testY)
-
 
 if __name__ == "__main__":
     mnistModel = build_model()
