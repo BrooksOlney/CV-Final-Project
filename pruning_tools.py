@@ -2,8 +2,10 @@
 # This code uses a ranked percentage method for determining what neurons to remove
 # code modified from multiple source programs provided by https://gist.github.com/vhoudebine
 
+import mnist
+import numpy as np
 import tensorflow.keras.backend as K
-import tensorflow.keras.preprocessing.image import ImageDataGenerator
+import tensorflow.keras.preprocessing.image #import ImageDataGenerator
 from tensorflow.keras.models import Model
 from kerassurgeon import Surgeon, identify
 from kerassurgeon.operations import delete_channels, delete_layer
@@ -48,6 +50,20 @@ def get_filters_l1(model, layer=None):
             norms[layer_ix, :nb_filters] = l1
     return norms
 
+#function to return pruned filters with l1 method
+def prune_l1(model, n_pruned, layer=None):
+    """returns list of indexes of filter to prune or a matrix layer X filter to prune"""
+    if layer or layer==0:
+        norms = get_filters_l1(model,layer)
+        to_prune = np.argsort(norms)[:n_pruned]
+    
+    else:
+        norms = get_filters_l1(model)
+        to_prune = smallest_indices(norms, n_pruned)
+    
+    return to_prune
+
+
 
 #Perc parameter sets the percentage of filters in the network to prune. Returns n_pruned which is the number of filters pruned  
 def compute_pruned_count(model, perc=0.1, layer=None):
@@ -81,8 +97,8 @@ def prune_one_layer(model, pruned_indexes, layer_ix, opt):
     return model_pruned
 
 def prune_multiple_layers(model, pruned_matrix, opt):
-  """Prunes several layers based on a Keras Model, layer index and matrix 
-  of indexes of filters to prune"""
+    """Prunes several layers based on a Keras Model, layer index and matrix 
+    of indexes of filters to prune"""
     conv_indexes = [i for i, v in enumerate(model.layers) if 'conv' in v.name]
     layers_to_prune = np.unique(pruned_matrix[:,0])
     surgeon = Surgeon(model, copy=True)
@@ -117,11 +133,21 @@ def prune_model(model, perc, opt, layer=None):
       
     n_pruned = compute_pruned_count(model, perc, layer)
     
-    to_prune = prune_l1(model, n_pruned, layer)      
+    #to_prune = prune(model, n_pruned, layer)      
 
     if layer or layer ==0:
         model_pruned = prune_one_layer(model, to_prune, layer, opt)
     else:
-        model_pruned = prune_multiple_layers(model, to_prune, opt)
+        model_pruned = prune_l1(model, n_pruned, opt)
             
     return model_pruned
+
+if __name__ == "__main__":
+    model = mnist.build_model()
+    print(model.summary())
+
+    (trainX, trainY), (testX, testY) = mnist.load_data()
+    newModel = prune_model(model, 0.1, 'opt')
+
+    acc = test(newModel, testX, testY)
+    print(newModel.summary())
