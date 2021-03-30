@@ -37,9 +37,9 @@ def build_model(filename="models\\lenet5-mnist.h5"):
 
     model.load_weights(filename)
     model.compile(
-                loss=tf.keras.losses.categorical_crossentropy,
-                optimizer=tf.keras.optimizers.Adam(),
-                metrics=['accuracy']
+        loss=tf.keras.losses.categorical_crossentropy,
+        optimizer=tf.keras.optimizers.Adam(),
+        metrics=['accuracy']
     )
 
     return model

@@ -2,10 +2,9 @@
 # This code uses a ranked percentage method for determining what neurons to remove
 # code modified from multiple source programs provided by https://gist.github.com/vhoudebine
 
-import mnist
-import keras.backend as K
-import keras.preprocessing.image import ImageDataGenerator
-from keras.models import Model
+import tensorflow.keras.backend as K
+import tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.models import Model
 from kerassurgeon import Surgeon, identify
 from kerassurgeon.operations import delete_channels, delete_layer
 import math
