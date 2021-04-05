@@ -20,6 +20,7 @@
 
 import mnist
 import numpy as np
+import time
 import tensorflow as tf
 from TVBMF import EVBMF
 import torch
@@ -51,10 +52,12 @@ def tucker_decomposition_conv_layer(layer):
     print("hi")
 
 def test(model, x, y):
-
+    start = time.time()
     preds = model.predict_on_batch(x)
+    runtime = time.time() - start
 
-    return np.mean(np.argmax(preds, axis=1) == np.argmax(y, axis=1))
+    return runtime, np.mean(np.argmax(preds, axis=1) == np.argmax(y, axis=1))
+
 
 def low_rank_factorization(model):
 

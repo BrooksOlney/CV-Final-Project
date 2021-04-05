@@ -141,10 +141,10 @@ def load_data():
     return (trainX, trainY), (testX, testY)
 
 if __name__ == "__main__":
-    mnistModel = build_model()
+    vggcifar10model = build_model()
     (trainX, trainY), (testX, testY)  = load_data()
 
-    print(mnistModel.summary())
-    loss, acc = mnistModel.evaluate(testX, testY)
+    print(vggcifar10model.summary())
+    loss, acc = vggcifar10model.evaluate(testX, testY)
     print("Model performance on test set:\n")
     print("Loss = {}\tAccuracy = {}".format(loss, acc))
