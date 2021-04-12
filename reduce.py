@@ -87,8 +87,11 @@ if __name__ == "__main__":
     (trainX, trainY), (testX, testY) = mnist.load_data()
     newModel = low_rank_factorization(model)
     acc = test(newModel, testX, testY)
-    # newModel.fit(trainX, trainY, 128, 10)
-    # acc = test(newModel, testX, testY)
+    newModel.fit(trainX, trainY, 128, 10)
+    acc = test(newModel, testX, testY)
+
+    results = newModel.evaluate(testX, testY)
+    print("test loss, test acc:", results)
     
     print(newModel.summary())
 

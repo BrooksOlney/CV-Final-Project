@@ -12,6 +12,7 @@ from kerassurgeon.operations import delete_channels, delete_layer
 import math
 
 
+
 def get_filter_weights(model, layer=None):
     """function to return weights array for one or all conv layers of a Keras model"""
     if layer or layer==0:
@@ -129,25 +130,13 @@ def prune_model(model, perc, opt, layer=None):
         A pruned Keras Model object
     
     """
-    assert perc >=0 and perc <1, "Invalid pruning percentage"
+    #assert perc >=0 and perc <1, "Invalid pruning percentage"
       
     n_pruned = compute_pruned_count(model, perc, layer)
     
     #to_prune = prune(model, n_pruned, layer)      
 
-    if layer or layer ==0:
-        model_pruned = prune_one_layer(model, to_prune, layer, opt)
-    else:
-        model_pruned = prune_l1(model, n_pruned, opt)
+    model_pruned = prune_l1(model, n_pruned, opt)
             
     return model_pruned
 
-if __name__ == "__main__":
-    model = mnist.build_model()
-    print(model.summary())
-
-    (trainX, trainY), (testX, testY) = mnist.load_data()
-    newModel = prune_model(model, 0.1, 'opt')
-
-    acc = test(newModel, testX, testY)
-    print(newModel.summary())
