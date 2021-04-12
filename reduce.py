@@ -20,29 +20,64 @@
 
 import mnist
 import numpy as np
+import time
 import tensorflow as tf
+from TVBMF import EVBMF
+import torch
+import tensorly
+from tensorly.decomposition import parafac, partial_tucker
+
+def estimate_ranks(layer):
+    """ Unfold the 2 modes of the Tensor the decomposition will 
+    be performed on, and estimates the ranks of the matrices using VBMF 
+    """
+
+    weights, bias = layer.get_weights()
+    # weights = np.rollaxis(weights, 0, 0).reshape(weights.shape[0], -1)
+    # bias = np.rollaxis(bias, 0, 0).reshape(bias.shape[0], -1)
+    # weights = torch.tensor(weights)
+    unfold_0 = tensorly.base.unfold(weights, 0) 
+    unfold_1 = tensorly.base.unfold(weights, 1)
+    diag_0 = EVBMF(unfold_0)
+    diag_1 = EVBMF(unfold_1)
+    ranks = [diag_0.shape[0], diag_1.shape[1]]
+    return ranks
+
+def tucker_decomposition_conv_layer(layer): 
+
+    ranks = estimate_ranks(layer)
+    w, b = layer.get_weights()
+
+    last, first, vertical, horizontal = parafac(w, rank=3, init='random')
+    print("hi")
 
 def test(model, x, y):
-
+    start = time.time()
     preds = model.predict_on_batch(x)
+    runtime = time.time() - start
 
-    return np.mean(np.argmax(preds, axis=1) == np.argmax(y, axis=1))
+    return runtime, np.mean(np.argmax(preds, axis=1) == np.argmax(y, axis=1))
+
 
 def low_rank_factorization(model):
 
+    # enumerate through the layers, apply reduction operations
     newLayers = []
-
     for i, layer in enumerate(model.layers):
 
         # apply lra to every FC layer except the output layer
         if "dense" in layer.name and i < len(model.layers) - 1:
             ls = lrf_fc_layer(layer)
             newLayers.extend(ls)
+
+        elif "conv" in layer.name:
+            ls = tucker_decomposition_conv_layer(layer)
+            newLayers.extend(ls)
         else:
             newLayers.append(layer)
 
+    # build new, reduced NN
     newModel = tf.keras.models.Sequential()
-
     for layer in newLayers:
         newModel.add(layer)
 
@@ -53,6 +88,11 @@ def low_rank_factorization(model):
     )
 
     return newModel
+
+def lrc_conv_layer(layer):
+
+    w, b = layer.get_weights()
+    
 
 def lrf_fc_layer(layer, t=20):
 
