@@ -19,6 +19,7 @@
 """
 
 import mnist
+import vggcifar10
 import pruning_tools
 import keras
 from keras.models import load_model

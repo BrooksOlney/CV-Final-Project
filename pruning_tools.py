@@ -15,13 +15,10 @@ import math
 
 def get_filter_weights(model, layer=None):
     """function to return weights array for one or all conv layers of a Keras model"""
-    if layer or layer==0:
-        weight_array = model.layers[layer].get_weights()[0]
-        
-    else:
-        weights = [model.layers[layer_ix].get_weights()[0] for layer_ix in range(len(model.layers))\
-         if 'conv' in model.layers[layer_ix].name]
-        weight_array = [np.array(i) for i in weights]
+
+    weights = [model.layers[layer_ix].get_weights()[0] for layer_ix in range(len(model.layers))\
+    if 'conv' in model.layers[layer_ix].name]
+    weight_array = [np.array(i) for i in weights]
     
     return weight_array 
 
@@ -128,6 +125,11 @@ def prune_model(model, perc, opt, layer=None):
     
     """
     #assert perc >=0 and perc <1, "Invalid pruning percentage"
+
+    print(type(model))
+    print(type(perc))
+    print(type(opt))
+    print(type(layer))
       
     n_pruned = compute_pruned_count(model, perc, layer)
     
