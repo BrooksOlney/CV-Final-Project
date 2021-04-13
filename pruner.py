@@ -34,17 +34,23 @@ if __name__ == "__main__":
     model = mnist.build_model()
     print(model.summary())
 
+    # set amount (by percentage) to prune here
+    percent = 0.2
+
     opt = keras.optimizers.RMSprop(lr=0.0001, decay=1e-6)
 
     (trainX, trainY), (testX, testY) = mnist.load_data()
         
     #Begin pruning Here
-    to_prune = pruning_tools.prune_model(model, 0.1, opt)
+    to_prune = pruning_tools.prune_model(model, percent, opt)
 
     model_pruned = pruning_tools.prune_multiple_layers(model, to_prune, opt)
 
     print(type(model_pruned))
 
     #Retest
-    #acc = reduce.test(model_pruned, testX, testY)
+    acc = reduce.test(model_pruned, testX, testY)
     print(model_pruned.summary())
+    results = model_pruned.evaluate(testX, testY)
+    print(f"percentage pruned: {percent * 100}%")
+    print("test loss, test acc:", results)
