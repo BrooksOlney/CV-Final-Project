@@ -118,9 +118,6 @@ def prune_multiple_layers(model, pruned_matrix, opt):
     
     return model_pruned
 
-#---------------------Main Driver Code----------------------#
-
-# For this code we will use 
 def prune_model(model, perc, opt, layer=None):
     """Prune a Keras model using different methods
     Arguments:

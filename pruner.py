@@ -35,7 +35,10 @@ if __name__ == "__main__":
     opt = keras.optimizers.RMSprop(lr=0.0001, decay=1e-6)
 
     (trainX, trainY), (testX, testY) = mnist.load_data()
+        
+    #Begin pruning Here
     newModel = pruning_tools.prune_model(model, 0.1, opt)
 
+    #Retest
     acc = test(newModel, testX, testY)
     print(newModel.summary())
