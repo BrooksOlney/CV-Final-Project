@@ -40,6 +40,8 @@ if __name__ == "__main__":
     #Begin pruning Here
     newModel = pruning_tools.prune_model(model, 0.1, opt)
 
+    print(type(newModel))
+
     #Retest
-    acc = test(newModel, testX, testY)
-    print(newModel.summary())
+    #acc = test(newModel, testX, testY)
+    #print(newModel.summary())

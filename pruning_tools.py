@@ -24,40 +24,31 @@ def get_filter_weights(model, layer=None):
 
 def get_filters_l1(model, layer=None):
     """Returns L1 norm of a Keras model filters at a given conv layer, if layer=None, returns a matrix of norms model is a Keras model"""
-    if layer or layer==0:
-        weights = get_filter_weights(model, layer)
-        num_filter = len(weights[0,0,0,:])
-        norms_dict = {}
-        norms = []
-        for i in range(num_filter):
-            l1_norm = np.sum(abs(weights[:,:,:,i]))
-            norms.append(l1_norm)
-    else:
-        weights = get_filter_weights(model)
-        max_kernels = max([layr.shape[3] for layr in weights])
-        norms = np.empty((len(weights), max_kernels))
-        norms[:] = np.NaN
-        for layer_ix in range(len(weights)):
-            # compute norm of the filters
-            kernel_size = weights[layer_ix][:,:,:,0].size
-            nb_filters = weights[layer_ix].shape[3]
-            kernels = weights[layer_ix]
-            l1 = [np.sum(abs(kernels[:,:,:,i])) for i in range(nb_filters)]
-            # divide by shape of the filters
-            l1 = np.array(l1) / kernel_size
-            norms[layer_ix, :nb_filters] = l1
+
+    weights = get_filter_weights(model)
+    max_kernels = max([layr.shape[3] for layr in weights])
+    norms = np.empty((len(weights), max_kernels))
+    norms[:] = np.NaN
+    for layer_ix in range(len(weights)):
+        # compute norm of the filters
+        kernel_size = weights[layer_ix][:,:,:,0].size
+        nb_filters = weights[layer_ix].shape[3]
+        kernels = weights[layer_ix]
+        l1 = [np.sum(abs(kernels[:,:,:,i])) for i in range(nb_filters)]
+        # divide by shape of the filters
+        l1 = np.array(l1) / kernel_size
+        norms[layer_ix, :nb_filters] = l1
+
     return norms
 
 #function to return pruned filters with l1 method
 def prune_l1(model, n_pruned, layer=None):
     """returns list of indexes of filter to prune or a matrix layer X filter to prune"""
-    if layer or layer==0:
-        norms = get_filters_l1(model,layer)
-        to_prune = np.argsort(norms)[:n_pruned]
+
+    norms = get_filters_l1(model)
+    to_prune = smallest_indices(norms, n_pruned)
     
-    else:
-        norms = get_filters_l1(model)
-        to_prune = smallest_indices(norms, n_pruned)
+    print(f'to_prune {type(to_prune)}')
     
     return to_prune
 
