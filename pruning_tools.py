@@ -115,12 +115,6 @@ def prune_model(model, perc, opt, layer=None):
         A pruned Keras Model object
     
     """
-    #assert perc >=0 and perc <1, "Invalid pruning percentage"
-
-    print(type(model))
-    print(type(perc))
-    print(type(opt))
-    print(type(layer))
       
     n_pruned = compute_pruned_count(model, perc, layer)
     

@@ -21,6 +21,7 @@
 import mnist
 import vggcifar10
 import pruning_tools
+import reduce
 import keras
 from keras.models import load_model
 from keras.preprocessing.image import ImageDataGenerator
@@ -38,10 +39,12 @@ if __name__ == "__main__":
     (trainX, trainY), (testX, testY) = mnist.load_data()
         
     #Begin pruning Here
-    newModel = pruning_tools.prune_model(model, 0.1, opt)
+    to_prune = pruning_tools.prune_model(model, 0.1, opt)
 
-    print(type(newModel))
+    model_pruned = pruning_tools.prune_multiple_layers(model, to_prune, opt)
+
+    print(type(model_pruned))
 
     #Retest
-    #acc = test(newModel, testX, testY)
-    #print(newModel.summary())
+    #acc = reduce.test(model_pruned, testX, testY)
+    print(model_pruned.summary())
