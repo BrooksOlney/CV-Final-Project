@@ -2,3 +2,4 @@ __pycache__/*
 .vscode/*
 .idea/*
 models/__pycache__/*
+*.tflite

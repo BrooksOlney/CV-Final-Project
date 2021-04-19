@@ -120,7 +120,9 @@ def prune_model(model, perc, opt, layer=None):
     
     #to_prune = prune(model, n_pruned, layer)      
 
-    model_pruned = prune_l1(model, n_pruned, opt)
+    to_prune = prune_l1(model, n_pruned, opt)
             
+    model_pruned = prune_multiple_layers(model, to_prune, opt)
+
     return model_pruned
 
