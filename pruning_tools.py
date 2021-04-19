@@ -2,7 +2,7 @@
 # This code uses a ranked percentage method for determining what neurons to remove
 # code modified from multiple source programs provided by https://gist.github.com/vhoudebine
 
-import mnist
+import models.mnist
 import numpy as np
 import tensorflow.keras.backend as K
 import tensorflow.keras.preprocessing.image #import ImageDataGenerator

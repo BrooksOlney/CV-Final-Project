@@ -18,28 +18,26 @@
         ** may only compute these metrics once, and compare to baseline for final (post quantization) model
 """
 
-import mnist
-import vggcifar10
+from models import vggcifar10, mnist
 import pruning_tools
-import reduce
-import keras
-from keras.models import load_model
-from keras.preprocessing.image import ImageDataGenerator
+from utils import test
+import tensorflow as tf
 import pandas as pd 
 import numpy as np
 import os
 
 
 if __name__ == "__main__":
-    model = mnist.build_model()
+    model = vggcifar10.build_model()
     print(model.summary())
 
     # set amount (by percentage) to prune here
-    percent = 0.2
+    percent = 0.15
 
-    opt = keras.optimizers.RMSprop(lr=0.0001, decay=1e-6)
+    opt = tf.keras.optimizers.RMSprop(lr=0.0001, decay=1e-6)
 
-    (trainX, trainY), (testX, testY) = mnist.load_data()
+    (trainX, trainY), (testX, testY) = vggcifar10.load_data()
+    print(trainX.shape)
         
     #Begin pruning Here
     to_prune = pruning_tools.prune_model(model, percent, opt)
@@ -49,8 +47,8 @@ if __name__ == "__main__":
     print(type(model_pruned))
 
     #Retest
-    acc = reduce.test(model_pruned, testX, testY)
+    acc = test(model_pruned, testX, testY)
     print(model_pruned.summary())
-    results = model_pruned.evaluate(testX, testY)
+    # results = model_pruned.evaluate(testX, testY)
     print(f"percentage pruned: {percent * 100}%")
-    print("test loss, test acc:", results)
+    print("accuracy = ", acc)
