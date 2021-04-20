@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 from time import time
+import tflite_runtime.interpreter as tflite
 
 def test(model, x, y):
     start = time()
@@ -26,6 +27,10 @@ def tflite_test(interpreter, x, y, batchSize = 32):
     for i in range(batches):
 
         batch = x[i*batchSize : (i+1) * batchSize]
+
+        # if len(batch) != batchSize:
+        #     interpreter.resize_tensor_input(input_tensor[0]['index'], [len(batch), *x[0].shape])
+        #     interpreter.allocate_tensors()
 
         interpreter.set_tensor(input_tensor[0]['index'], batch)
         interpreter.invoke()
