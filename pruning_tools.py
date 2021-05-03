@@ -1,6 +1,22 @@
-# Using Keras Surgeon these functions can be used to prune a trained network
-# This code uses a ranked percentage method for determining what neurons to remove
-# code modified from multiple source programs provided by https://gist.github.com/vhoudebine
+"""
+    Computer Vision Final Project
+    Model reduction techniques for CNNs targeting mobile applications
+
+    Authors:
+    Brooks Olney, Peter Stilian
+
+    This is the main script that implements and evaluates the reduction methods.
+    Pipeline is as follows:
+        1) load model and dataset
+        2) compute baseline metrics for accuracy, model size, and performance (time for inference)
+        3) perform model reduction technique - pruning or rank factorization
+      **4) compute (2) for reduced model
+        5) quantize the weights to smaller precision
+        6) compute (2) again
+        7) plot results
+
+        ** may only compute these metrics once, and compare to baseline for final (post quantization) model
+"""
 
 import models.mnist
 import numpy as np
